@@ -119,6 +119,9 @@ button,select,input,textarea{font:inherit;color:inherit}
 details.preview summary{cursor:pointer;font-size:.88rem;color:var(--muted)}
 details.preview pre{font-family:var(--mono);font-size:.82rem;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0 0}
 .toast{font-size:.88rem;color:var(--accent);min-height:1.3em;margin:0}
+.toast.err{color:#C0392B}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.opt{color:var(--muted);font-weight:400}
 .contact{font-size:.88rem;color:var(--muted);margin:0}
 .contact b{color:var(--ink);font-family:var(--mono);user-select:all}
 
@@ -172,7 +175,6 @@ footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1p
     </a>
     <div class="top-links">
       <a class="btn btn-ig" id="topIg" href="#" target="_blank" rel="noopener">Instagram</a>
-      <a class="btn btn-wa" id="topWa" href="#" target="_blank" rel="noopener">WhatsApp</a>
     </div>
   </div>
 </header>
@@ -181,7 +183,7 @@ footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1p
   <section class="hero wrap">
     <div class="eyebrow">Phones · Tablets · Consoles · Controllers · PC cleaning</div>
     <h1>Phone and console repairs in Colchester</h1>
-    <p>We collect from your door and most repairs are back with you the same day, the rest within 24 hours. Answer three quick questions to see your price, then book on WhatsApp or Instagram.</p>
+    <p>We collect from your door and most repairs are back with you the same day, the rest within 24 hours. Answer three quick questions to see your price, then send us your request or message us on Instagram.</p>
   </section>
 
   <section class="wrap" aria-label="Instant quote">
@@ -234,16 +236,20 @@ footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1p
             <p class="note" id="tNote"></p>
           </div>
           <form class="col" id="form" novalidate>
-            <label class="field" for="name">Your name<input id="name" autocomplete="name" placeholder="e.g. Jordan"></label>
+            <label class="field" for="name">Your name<input id="name" autocomplete="name" placeholder="e.g. Jordan" required></label>
+            <label class="field" for="phone">Phone number<input id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="e.g. 07700 900123" required></label>
+            <label class="field" for="email">Email <small class="opt">(optional)</small><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+            <label class="field" for="postcode" id="postcodeField" hidden>Collection address<input id="postcode" autocomplete="street-address" placeholder="House number, street and postcode"></label>
             <label class="field" for="details">Anything else we should know?<textarea id="details" placeholder="e.g. Dropped it last night, touch doesn't work at the bottom"></textarea></label>
             <label class="field" for="when">When suits you?<input id="when" placeholder="e.g. Saturday morning"></label>
             <div class="send">
-              <a class="btn btn-wa" id="sendWa" href="#" target="_blank" rel="noopener">Book on WhatsApp</a>
+              <input type="text" name="_honey" id="honey" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
+              <button class="btn btn-primary" type="submit" id="sendReq">Send repair request</button>
               <a class="btn btn-ig" id="sendIg" href="#" target="_blank" rel="noopener">Message on Instagram</a>
             </div>
             <p class="toast" id="toast" role="status"></p>
             <details class="preview"><summary>See the message we'll send</summary><pre id="msg"></pre></details>
-            <p class="contact">WhatsApp <b id="waText"></b> · Instagram <b id="igText"></b></p>
+            <p class="contact">Instagram <b id="igText"></b></p>
           </form>
         </div>
       </div>
@@ -268,7 +274,7 @@ footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1p
       <h2>How it works</h2>
       <ol class="how">
         <li><b>Get a price</b><p>Answer the three questions above. Book 2 or more repairs and you get money off.</p></li>
-        <li><b>Message us</b><p>Send your quote on WhatsApp or Instagram and we'll confirm a time.</p></li>
+        <li><b>Send your request</b><p>Send it straight from your quote, or message us on Instagram. We'll confirm a time.</p></li>
         <li><b>Drop off or we collect</b><p>We check the device and confirm the final price before starting.</p></li>
         <li><b>Get it back</b><p>Most repairs are done the same day, and the rest within 24 hours.</p></li>
       </ol>
@@ -306,11 +312,11 @@ footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1p
       <details>
         <summary>Privacy notice</summary>
         <ul>
-          <li><b>Who we are.</b> Fixiing Phone, a repair business in Colchester. Contact us on WhatsApp or Instagram (details above).</li>
-          <li><b>What we collect.</b> Your name, contact details, address if we collect, your device details and the messages you send us.</li>
+          <li><b>Who we are.</b> Fixiing Phone, a repair business in Colchester. Contact us on Instagram (details above).</li>
+          <li><b>What we collect.</b> Your name, phone number, email if you give it, address if we collect, your device details and the messages you send us.</li>
           <li><b>Why.</b> To quote, repair, collect and return your device, and to contact you about it.</li>
-          <li><b>This website.</b> The quote tool runs on your device. Nothing you type is sent to us until you send the message yourself. We don't use cookies or tracking. Fonts load from Google Fonts and the site is hosted by Render, so they may see your IP address.</li>
-          <li><b>WhatsApp and Instagram.</b> Messages you send us there are also covered by Meta's privacy policy.</li>
+          <li><b>This website.</b> The quote tool runs on your device. Nothing you type is sent until you press "Send repair request", which emails your details to us through FormSubmit (formsubmit.co). We don't use cookies or tracking. Fonts load from Google Fonts and the site is hosted by Render, so they may see your IP address.</li>
+          <li><b>Instagram.</b> Messages you send us there are also covered by Meta's privacy policy.</li>
           <li><b>How long we keep it.</b> For the repair and the 12-month warranty, and payment records for 6 years for tax.</li>
           <li><b>Your rights.</b> You can ask to see, correct or delete your information. We never sell it. If you're unhappy, you can complain to the ICO at ico.org.uk.</li>
         </ul>
@@ -325,7 +331,7 @@ footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1p
 
 <script>
 /* Prices only. Part costs and rates are not published. */
-const CONFIG = {"business": "Fixiing Phone", "whatsapp": "447000000000", "whatsappDisplay": "07000 000000", "instagram": "fixiingphone", "freeMiles": 8, "collectNear": 10, "collectFar": 20, "roundTo": 5, "multiDiscount": 15};
+const CONFIG = {"business": "Fixiing Phone", "instagram": "fixiingphone", "requestEmail": "bluefrogday@proton.me", "freeMiles": 8, "collectNear": 10, "collectFar": 20, "roundTo": 5, "multiDiscount": 15};
 const CATS = [["iphone","iPhone"],["samsung","Samsung"],["pixel","Google Pixel"],["ipad","iPad"],["playstation","PlayStation"],["xbox","Xbox"],["nintendo","Nintendo Switch"],["controllers","Controllers"],["pc","PC & laptop"],["other","Something else"]];
 /* ===== WHAT WE DO: shown on the quote for each repair ===== */
 const DETAILS = {
@@ -537,17 +543,23 @@ function message(){
   const name = $("name").value.trim(), details = $("details").value.trim(), when = $("when").value.trim();
   const lines = ["Hi " + CONFIG.business + ", I'd like to book a repair."];
   if (name) lines.push("Name: " + name);
+  const phone = $("phone").value.trim(), email = $("email").value.trim(), addr = $("postcode").value.trim();
+  if (phone) lines.push("Phone: " + phone);
+  if (email) lines.push("Email: " + email);
   lines.push("Device: " + (state.cat === "other" || !state.model ? "Other" : state.model));
   if (sel.length) lines.push((sel.length > 1 ? "Repairs: " : "Repair: ") + sel.map(j => j.name).join(", "), "Quote from your site: £" + quote(sel).price + (state.collect ? " (incl. collection)" : ""));
   if (OTHER_PICKED()) lines.push(sel.length ? "Also something not listed (see details)" : "Problem: not listed (see details)");
   const bands = {free:"free (within " + CONFIG.freeMiles + " miles)", near:"£" + CONFIG.collectNear + " (" + CONFIG.freeMiles + " to 10 miles)", far:"£" + CONFIG.collectFar + " (10 to 20 miles)"};
   if (bands[state.band]) lines.push("Collection & drop-off: " + bands[state.band]);
+  if (bands[state.band] && addr) lines.push("Collection address: " + addr);
   if (details) lines.push("Details: " + details);
-  if (when) lines.push("Drop-off: " + when);
+  if (when) lines.push((state.band !== "none" ? "Collection time: " : "Drop-off: ") + when);
   return lines.join("\n");
 }
-const waLink = t => "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(t);
-function renderMessage(){ const t = message(); $("msg").textContent = t; $("sendWa").href = waLink(t); }
+function renderMessage(){
+  $("msg").textContent = message();
+  $("postcodeField").hidden = state.band === "none";
+}
 
 /* events */
 $("catTiles").addEventListener("click", e => {
@@ -570,18 +582,47 @@ $("q").addEventListener("input", renderModels);
 $("crumbs").addEventListener("click", e => { const b = e.target.closest("[data-step]"); if (b && !b.disabled) go(+b.dataset.step); });
 $("back").addEventListener("click", () => go(state.step === 4 && state.cat === "other" ? 1 : state.step - 1));
 $("collectOpts").addEventListener("change", e => { state.band = e.target.value === "0" ? "none" : e.target.value; state.collect = ({near: CONFIG.collectNear, far: CONFIG.collectFar})[e.target.value] || 0; renderQuote(); renderOwner(); });
-["name","details","when"].forEach(id => $(id).addEventListener("input", renderMessage));
-$("form").addEventListener("submit", e => e.preventDefault());
+["name","phone","email","postcode","details","when"].forEach(id => $(id).addEventListener("input", renderMessage));
+function toast(text, err){ $("toast").textContent = text; $("toast").classList.toggle("err", !!err); }
+$("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  if ($("honey").value) return;
+  const need = [["name","your name"],["phone","a phone number"]];
+  if (state.band !== "none") need.push(["postcode","your collection address"]);
+  const miss = need.find(([id]) => !$(id).value.trim());
+  if (miss){ toast("Please add " + miss[1] + " so we can get back to you.", true); $(miss[0]).focus(); return; }
+  const sel = selected();
+  const what = sel.map(j => j.name).concat(OTHER_PICKED() ? ["Something else"] : []).join(", ") || "Not sure yet";
+  const device = state.cat === "other" || !state.model ? "Other device" : state.model;
+  const payload = {
+    _subject: "New repair request: " + device + " - " + what,
+    _template: "table",
+    Name: $("name").value.trim(), Phone: $("phone").value.trim(), Email: $("email").value.trim() || "-",
+    Device: device, Repairs: what, Quote: sel.length ? "£" + quote(sel).price : "Needs a quote",
+    Collection: ({none:"Dropping off", free:"Free collection", near:"£" + CONFIG.collectNear + " collection", far:"£" + CONFIG.collectFar + " collection"})[state.band],
+    Address: $("postcode").value.trim() || "-", Details: $("details").value.trim() || "-", "Best time": $("when").value.trim() || "-"
+  };
+  if (payload.Email !== "-") payload._replyto = payload.Email;
+  const btn = $("sendReq"); btn.disabled = true; btn.textContent = "Sending...";
+  try {
+    const r = await fetch("https://formsubmit.co/ajax/" + CONFIG.requestEmail, {method:"POST", headers:{"Content-Type":"application/json", Accept:"application/json"}, body: JSON.stringify(payload)});
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || String(j.success) === "false") throw new Error(j.message || "failed");
+    toast("Request sent. We'll be in touch soon to confirm a time.");
+    btn.textContent = "Request sent";
+  } catch(_) {
+    toast("Your request didn't send. Please try again, or message us on Instagram.", true);
+    btn.disabled = false; btn.textContent = "Send repair request";
+  }
+});
 $("sendIg").addEventListener("click", () => {
   const t = message();
   const done = () => { $("toast").textContent = "Your message is copied. Paste it into the Instagram chat with @" + CONFIG.instagram + "."; };
   const fallback = () => { $("toast").textContent = "Open \"See the message we'll send\", copy it, then paste it into the Instagram chat with @" + CONFIG.instagram + "."; };
   try { navigator.clipboard.writeText(t).then(done, fallback); } catch(_) { fallback(); }
 });
-$("topWa").href = "https://wa.me/" + CONFIG.whatsapp;
 $("topIg").href = "https://www.instagram.com/" + CONFIG.instagram;
 $("sendIg").href = "https://ig.me/m/" + CONFIG.instagram;
-$("waText").textContent = CONFIG.whatsappDisplay;
 $("igText").textContent = "@" + CONFIG.instagram;
 function renderOwner(){}
 render();
