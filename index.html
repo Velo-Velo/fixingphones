@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Phone, iPad, console and controller repairs in Colchester. Collected from your door for £5, most repairs back the same day. 12-month warranty, no fix no fee.">
+<meta name="description" content="Phone, iPad, console and controller repairs in Colchester. Free collection within 8 miles, most repairs back the same day. 12-month warranty, no fix no fee.">
 <title>Fixiing Phone Colchester</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -104,6 +104,8 @@ button,select,input,textarea{font:inherit;color:inherit}
 .what em{font-style:normal;font-family:var(--mono);font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
 .what ul{margin:6px 0 0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px}
 .note{font-size:.85rem;color:var(--muted);margin:0}
+.collect-opts{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+.collect-opts legend{font-weight:600;padding:0;margin-bottom:6px}
 .collect{display:flex;gap:12px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer}
 .collect input{width:22px;height:22px;accent-color:var(--accent);flex:none}
 .collect span{display:flex;flex-direction:column}
@@ -137,6 +139,11 @@ details.preview pre{font-family:var(--mono);font-size:.82rem;white-space:pre-wra
 @media (max-width:440px){.why{grid-template-columns:minmax(0,1fr)}}
 .why li{border-left:3px solid var(--tag);padding-left:12px;display:flex;flex-direction:column;gap:2px}
 .why p{margin:0;color:var(--muted);font-size:.92rem}
+.areas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}
+@media (max-width:760px){.areas{grid-template-columns:minmax(0,1fr)}}
+.areas div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.areas h3{font-size:1.05rem}
+.areas p{margin:6px 0 0;color:var(--muted);font-size:.92rem}
 .lead{color:var(--muted);max-width:60ch;margin:8px 0 0}
 .legal details{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:12px 16px;margin-top:12px;max-width:760px}
 .legal summary{cursor:pointer;font-weight:600}
@@ -156,7 +163,7 @@ footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1p
 <body>
 
 
-<div class="band"><div class="wrap"><b>Collected from your door, back the same day on most repairs.</b> £5 collection in Colchester · 12-month warranty · No fix, no fee</div></div>
+<div class="band"><div class="wrap"><b>Free collection within 8 miles of Colchester.</b> Back the same day on most repairs · 12-month warranty · No fix, no fee</div></div>
 <header class="bar">
   <div class="wrap">
     <a class="logo" href="#top" aria-label="Fixiing Phone home">
@@ -217,7 +224,13 @@ footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1p
               <dt id="svT" hidden>Multi-repair saving</dt><dd id="svV" hidden>–</dd>
             </dl>
             <div class="what" id="whatWrap"><em>What we do</em><ul id="tWhat"></ul></div>
-            <label class="collect" for="collect"><input type="checkbox" id="collect"><span><b>Collect and drop back</b><small>We pick it up and bring it back for £5 (Colchester area)</small></span></label>
+            <fieldset class="collect-opts" id="collectOpts">
+              <legend>Getting it to us</legend>
+              <label class="collect" for="collect0"><input type="radio" name="collect" id="collect0" value="0" checked><span><b>I'll drop it off</b><small>No charge</small></span></label>
+              <label class="collect" for="collectFree"><input type="radio" name="collect" id="collectFree" value="free"><span><b>Free collection within 8 miles</b><small>e.g. Colchester, Wivenhoe, Stanway, Dedham</small></span></label>
+              <label class="collect" for="collectNear"><input type="radio" name="collect" id="collectNear" value="near"><span><b>Collect 8 to 10 miles</b><small>£10 there and back, e.g. Tiptree, West Mersea, Manningtree</small></span></label>
+              <label class="collect" for="collectFar"><input type="radio" name="collect" id="collectFar" value="far"><span><b>Collect 10 to 20 miles</b><small>£20 there and back, e.g. Ipswich, Clacton, Braintree</small></span></label>
+            </fieldset>
             <p class="note" id="tNote"></p>
           </div>
           <form class="col" id="form" novalidate>
@@ -244,7 +257,7 @@ footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1p
       <ul class="why">
         <li><b>12-month warranty</b><p>On the parts we fit and our work.</p></li>
         <li><b>No fix, no fee</b><p>If we can't fix it, you pay nothing.</p></li>
-        <li><b>Collected from your door</b><p>£5 collection and drop-off around Colchester.</p></li>
+        <li><b>Collected from your door</b><p>Free within 8 miles of Colchester, £10 up to 10 miles, £20 up to 20 miles.</p></li>
         <li><b>Prices up front</b><p>See your price before you book. We confirm it before we start.</p></li>
       </ul>
     </div>
@@ -256,7 +269,7 @@ footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1p
       <ol class="how">
         <li><b>Get a price</b><p>Answer the three questions above. Book 2 or more repairs and you get money off.</p></li>
         <li><b>Message us</b><p>Send your quote on WhatsApp or Instagram and we'll confirm a time.</p></li>
-        <li><b>Drop off or we collect (£5)</b><p>We check the device and confirm the final price before starting.</p></li>
+        <li><b>Drop off or we collect</b><p>We check the device and confirm the final price before starting.</p></li>
         <li><b>Get it back</b><p>Most repairs are done the same day, and the rest within 24 hours.</p></li>
       </ol>
     </div>
@@ -265,7 +278,13 @@ footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1p
   <section class="section" id="area">
     <div class="wrap">
       <h2>Where we collect from</h2>
-      <p class="lead">We collect and drop back in Colchester and the surrounding area for £5. Not sure if you're covered? Message us your postcode and we'll let you know.</p>
+      <p class="lead">We pick up your device and bring it back once it's fixed. The price covers both trips.</p>
+      <div class="areas">
+        <div><h3>Free · within 8 miles</h3><p>Colchester, Wivenhoe, Rowhedge, Stanway, Marks Tey, Copford, Brightlingsea, Alresford, Elmstead Market, Ardleigh, Dedham, Langham, Boxted, Nayland, East Bergholt, Fingringhoe, Abberton and Layer de la Haye</p></div>
+        <div><h3>£10 · 8 to 10 miles</h3><p>Tiptree, West Mersea, Manningtree, Mistley, Great Bentley and Thorrington</p></div>
+        <div><h3>£20 · 10 to 20 miles</h3><p>Ipswich, Hadleigh, Sudbury, Halstead, Coggeshall, Kelvedon, Braintree, Witham, Maldon, Clacton-on-Sea, Frinton-on-Sea, Walton-on-the-Naze, Harwich, Dovercourt and Felixstowe</p></div>
+      </div>
+      <p class="note" style="margin-top:12px">Distances are measured from central Colchester. Not sure which band you're in? Message us your postcode.</p>
     </div>
   </section>
 
@@ -306,7 +325,7 @@ footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1p
 
 <script>
 /* Prices only. Part costs and rates are not published. */
-const CONFIG = {"business": "Fixiing Phone", "whatsapp": "447000000000", "whatsappDisplay": "07000 000000", "instagram": "fixiingphone", "collectionFee": 5, "roundTo": 5, "multiDiscount": 15};
+const CONFIG = {"business": "Fixiing Phone", "whatsapp": "447000000000", "whatsappDisplay": "07000 000000", "instagram": "fixiingphone", "freeMiles": 8, "collectNear": 10, "collectFar": 20, "roundTo": 5, "multiDiscount": 15};
 const CATS = [["iphone","iPhone"],["samsung","Samsung"],["pixel","Google Pixel"],["ipad","iPad"],["playstation","PlayStation"],["xbox","Xbox"],["nintendo","Nintendo Switch"],["controllers","Controllers"],["pc","PC & laptop"],["other","Something else"]];
 /* ===== WHAT WE DO: shown on the quote for each repair ===== */
 const DETAILS = {
@@ -379,7 +398,7 @@ const CATALOG = {"iphone":{"iPhone SE (2020)":[["screen","Screen (standard)","Cr
 
 /* ===== wizard ===== */
 const $ = id => document.getElementById(id);
-const state = {step:1, cat:null, model:null, jobs:[], collect:false};
+const state = {step:1, cat:null, model:null, jobs:[], collect:0, band:"none"};
 const gbp = n => "£" + (Math.round(n*100)/100).toFixed(2);
 
 const ICON = {
@@ -417,7 +436,7 @@ function quote(list){
   const off = !multi ? 0 : flat ? sum - Math.max(...saves) : sum;
   const base = roundPrice(list.reduce((a,j) => a + j.raw, 0) - off);
   const separate = multi ? list.reduce((a,j) => a + roundPrice(j.raw), 0) : base;
-  return {base, saving: Math.max(0, separate - base), price: base + (state.collect ? CONFIG.collectionFee : 0)};
+  return {base, saving: Math.max(0, separate - base), price: base + (state.collect || 0)};
 }
 /*PRICING_END*/
 const OTHER_PICKED = () => state.jobs.includes("other");
@@ -519,9 +538,10 @@ function message(){
   const lines = ["Hi " + CONFIG.business + ", I'd like to book a repair."];
   if (name) lines.push("Name: " + name);
   lines.push("Device: " + (state.cat === "other" || !state.model ? "Other" : state.model));
-  if (sel.length) lines.push((sel.length > 1 ? "Repairs: " : "Repair: ") + sel.map(j => j.name).join(", "), "Quote from your site: £" + quote(sel).price + (state.collect ? " (incl. £" + CONFIG.collectionFee + " collection)" : ""));
+  if (sel.length) lines.push((sel.length > 1 ? "Repairs: " : "Repair: ") + sel.map(j => j.name).join(", "), "Quote from your site: £" + quote(sel).price + (state.collect ? " (incl. collection)" : ""));
   if (OTHER_PICKED()) lines.push(sel.length ? "Also something not listed (see details)" : "Problem: not listed (see details)");
-  else if (state.collect) lines.push("I'd like collection & drop-off (£" + CONFIG.collectionFee + ")");
+  const bands = {free:"free (within " + CONFIG.freeMiles + " miles)", near:"£" + CONFIG.collectNear + " (" + CONFIG.freeMiles + " to 10 miles)", far:"£" + CONFIG.collectFar + " (10 to 20 miles)"};
+  if (bands[state.band]) lines.push("Collection & drop-off: " + bands[state.band]);
   if (details) lines.push("Details: " + details);
   if (when) lines.push("Drop-off: " + when);
   return lines.join("\n");
@@ -549,7 +569,7 @@ $("toQuote").addEventListener("click", () => { if (state.jobs.length) go(4); });
 $("q").addEventListener("input", renderModels);
 $("crumbs").addEventListener("click", e => { const b = e.target.closest("[data-step]"); if (b && !b.disabled) go(+b.dataset.step); });
 $("back").addEventListener("click", () => go(state.step === 4 && state.cat === "other" ? 1 : state.step - 1));
-$("collect").addEventListener("change", e => { state.collect = e.target.checked; renderQuote(); renderOwner(); });
+$("collectOpts").addEventListener("change", e => { state.band = e.target.value === "0" ? "none" : e.target.value; state.collect = ({near: CONFIG.collectNear, far: CONFIG.collectFar})[e.target.value] || 0; renderQuote(); renderOwner(); });
 ["name","details","when"].forEach(id => $(id).addEventListener("input", renderMessage));
 $("form").addEventListener("submit", e => e.preventDefault());
 $("sendIg").addEventListener("click", () => {
