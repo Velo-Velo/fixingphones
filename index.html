@@ -610,8 +610,9 @@ $("form").addEventListener("submit", async e => {
     if (!r.ok || String(j.success) === "false") throw new Error(j.message || "failed");
     toast("Request sent. We'll be in touch soon to confirm a time.");
     btn.textContent = "Request sent";
-  } catch(_) {
-    toast("Your request didn't send. Please try again, or message us on Instagram.", true);
+  } catch(err) {
+    const why = err && err.message && err.message !== "failed" ? " (" + err.message + ")" : "";
+    toast("Your request didn't send" + why + ". Please try again, or message us on Instagram.", true);
     btn.disabled = false; btn.textContent = "Send repair request";
   }
 });
