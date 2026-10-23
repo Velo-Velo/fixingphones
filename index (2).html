@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Instant repair prices for iPhone, Samsung, Pixel, PS5, Xbox, controllers and PC cleaning. Collection and drop-off for £5.">
+<title>Fixing Phones</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one repair wizard, one question per screen, like a repair guide. Job-tag amber marks the price only. */
+:root{
+  --bg:#EEF1F3;--panel:#FFFFFF;--ink:#121820;--muted:#5A6672;--line:#D5DCE2;
+  --accent:#0E6E8C;--accent-ink:#FFFFFF;--tag:#F0A500;--tag-ink:#1E1600;--soft:#E3EEF2;--wa:#1F8F4E;
+  --display:"Chakra Petch","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1418;--panel:#171E24;--ink:#E7EDF1;--muted:#93A1AD;--line:#2A343D;
+  --accent:#3BA9CC;--accent-ink:#06161C;--tag:#F4B527;--tag-ink:#1E1600;--soft:#1B2A31;--wa:#3DBB72;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1418;--panel:#171E24;--ink:#E7EDF1;--muted:#93A1AD;--line:#2A343D;
+  --accent:#3BA9CC;--accent-ink:#06161C;--tag:#F4B527;--tag-ink:#1E1600;--soft:#1B2A31;--wa:#3DBB72;color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+a{color:var(--accent)}
+button,select,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+.band{background:var(--accent);color:var(--accent-ink);font-size:.9rem}
+.band .wrap{padding-block:8px;text-align:center}
+.bar{border-bottom:1px solid var(--line);background:var(--panel)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:1.25rem;letter-spacing:.02em;text-decoration:none;color:var(--ink)}
+.top-links{display:flex;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer;text-decoration:none;min-height:44px}
+.btn-wa{background:var(--wa);color:#fff}
+.btn-ig,.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+@media (max-width:420px){.top-links .btn{padding:8px 11px;font-size:.9rem}}
+
+.hero{padding-block:28px 18px}
+.eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hero h1{font-size:clamp(1.8rem,5vw,2.7rem);margin-top:6px;max-width:20ch}
+.hero p{color:var(--muted);max-width:56ch;margin:8px 0 0}
+
+/* wizard */
+.wizard{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:40px}
+.wz-top{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.back{flex:none;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:transparent;cursor:pointer;display:grid;place-items:center}
+.crumbs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;min-width:0}
+.crumbs::-webkit-scrollbar{display:none}
+.crumb{flex:none;font-size:.85rem;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;cursor:pointer;white-space:nowrap;color:var(--muted)}
+.crumb.done{color:var(--ink);background:var(--soft);border-color:transparent}
+.crumb.now{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.crumb:disabled{cursor:default;opacity:.6}
+.progress{height:3px;background:var(--line)}
+.progress i{display:block;height:100%;width:25%;background:var(--accent);transition:width .25s}
+
+.panel{padding:22px 18px 26px}
+.panel h2{font-size:clamp(1.35rem,3.4vw,1.75rem)}
+.panel .sub{color:var(--muted);margin:4px 0 0;font-size:.95rem}
+@media (prefers-reduced-motion:no-preference){.panel.enter{animation:enter .22s ease-out}}
+@keyframes enter{from{opacity:.4;transform:translateX(10px)}to{opacity:1;transform:none}}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:18px}
+.tile{text-align:left;display:flex;flex-direction:column;gap:4px;padding:14px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);cursor:pointer;transition:border-color .15s,transform .15s;min-height:64px}
+.tile:hover{border-color:var(--accent)}
+@media (prefers-reduced-motion:no-preference){.tile:hover{transform:translateY(-2px)}}
+.tile svg{color:var(--accent);margin-bottom:6px}
+.tile b{font-weight:600;line-height:1.3}
+.tile small{color:var(--muted);font-size:.84rem;line-height:1.35}
+.tile .t-price{margin-top:auto;padding-top:8px;font-family:var(--display);font-weight:700;font-size:1.3rem;font-variant-numeric:tabular-nums}
+.tiles.jobs .tile{position:relative}
+.tiles.jobs .tile b{padding-right:28px}
+.tick{position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;color:transparent;background:var(--panel)}
+.tile[aria-pressed="true"]{border-color:var(--accent);background:var(--soft)}
+.tile[aria-pressed="true"] .tick{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.pickbar{position:sticky;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 10px 10px 16px;border-radius:12px;background:var(--ink);color:var(--bg);box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.pickbar b{font-weight:600}
+.btn-primary{background:var(--tag);color:var(--tag-ink)}
+.btn-primary:disabled{opacity:.55;cursor:default}
+.what ul ul{margin:2px 0 4px;gap:2px}
+.tiles.models{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+.tiles.models .tile{justify-content:center;min-height:56px}
+.search{margin-top:16px;width:100%;padding:11px 12px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);min-height:46px}
+.empty{color:var(--muted);margin:16px 0 0}
+
+/* quote step */
+.quote{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;margin-top:18px}
+@media (max-width:760px){.quote{grid-template-columns:minmax(0,1fr)}}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.price{display:flex;align-items:baseline;justify-content:space-between;gap:10px;background:var(--tag);color:var(--tag-ink);border-radius:12px;padding:14px 18px}
+.price span{font-family:var(--mono);font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
+.price strong{font-family:var(--display);font-size:2.6rem;line-height:1;font-variant-numeric:tabular-nums}
+.rows{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;margin:0;font-size:.95rem}
+.rows dt{color:var(--muted)}
+.rows dd{margin:0;text-align:right;font-weight:500}
+.what em{font-style:normal;font-family:var(--mono);font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.what ul{margin:6px 0 0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px}
+.note{font-size:.85rem;color:var(--muted);margin:0}
+.collect{display:flex;gap:12px;align-items:center;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer}
+.collect input{width:22px;height:22px;accent-color:var(--accent);flex:none}
+.collect span{display:flex;flex-direction:column}
+.collect small{color:var(--muted);font-size:.82rem}
+.collect:has(input:checked){border-color:var(--accent);background:var(--soft)}
+.field{display:flex;flex-direction:column;gap:4px;font-weight:500;font-size:.92rem}
+.field input,.field textarea{padding:11px 12px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);min-height:46px}
+.field textarea{min-height:88px;resize:vertical}
+.send{display:flex;flex-direction:column;gap:8px}
+.send .btn{width:100%}
+details.preview summary{cursor:pointer;font-size:.88rem;color:var(--muted)}
+details.preview pre{font-family:var(--mono);font-size:.82rem;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0 0}
+.toast{font-size:.88rem;color:var(--accent);min-height:1.3em;margin:0}
+.contact{font-size:.88rem;color:var(--muted);margin:0}
+.contact b{color:var(--ink);font-family:var(--mono);user-select:all}
+
+/* owner */
+.owner-sec{margin-bottom:32px}
+.owner{border:1.5px dashed var(--accent);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:var(--soft);max-width:460px}
+.owner h3{font-size:1.05rem}
+.owner .rows dd{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.owner label{display:flex;justify-content:space-between;gap:10px;font-size:.9rem}
+.owner input[type=range]{width:100%;accent-color:var(--accent)}
+.owner input[type=password]{padding:10px 12px;border-radius:8px;border:1.5px solid var(--line);background:var(--panel);min-height:44px}
+.src{font-size:.78rem;color:var(--muted);margin:0}
+
+.section{padding-block:32px;border-top:1px solid var(--line)}
+.section h2{font-size:clamp(1.4rem,3.2vw,1.8rem)}
+.how{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:16px 0 0;padding:0;list-style:none;counter-reset:s}
+@media (max-width:820px){.how{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:440px){.how{grid-template-columns:minmax(0,1fr)}}
+.how li{counter-increment:s;display:flex;flex-direction:column;gap:4px}
+.how li::before{content:counter(s);font-family:var(--display);font-size:1.6rem;font-weight:700;color:var(--accent)}
+.how b{font-weight:600}
+.how p{margin:0;color:var(--muted);font-size:.92rem}
+footer{padding-block:24px 40px;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line)}
+</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+
+<div class="band"><div class="wrap"><b>Collection &amp; drop-off for £5.</b> Most repairs are back with you the same day, and the rest within 24 hours.</div></div>
+<header class="bar">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Fixing Phones home">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect x="7" y="2" width="16" height="26" rx="3" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M11 9l8 8M19 9l-3 3" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" fill="none"/><circle cx="15" cy="24" r="1.4" fill="currentColor"/></svg>
+      Fixing Phones
+    </a>
+    <div class="top-links">
+      <a class="btn btn-ig" id="topIg" href="#" target="_blank" rel="noopener">Instagram</a>
+      <a class="btn btn-wa" id="topWa" href="#" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero wrap">
+    <div class="eyebrow">Phones · Consoles · Controllers · PC cleaning</div>
+    <h1>Get a repair price in under a minute</h1>
+    <p>Answer three quick questions and you'll see your price. Then send it to us on WhatsApp or Instagram to book in.</p>
+  </section>
+
+  <section class="wrap" aria-label="Instant quote">
+    <div class="wizard" id="wizard">
+      <div class="wz-top">
+        <button class="back" id="back" type="button" aria-label="Back" hidden><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M11 3L5 9l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <nav class="crumbs" id="crumbs" aria-label="Quote steps"></nav>
+      </div>
+      <div class="progress" aria-hidden="true"><i id="prog"></i></div>
+
+      <div class="panel" id="p1">
+        <h2>What needs fixing?</h2>
+        <p class="sub">Choose the type of device.</p>
+        <div class="tiles" id="catTiles"></div>
+      </div>
+
+      <div class="panel" id="p2" hidden>
+        <h2 id="p2Title">Which model?</h2>
+        <p class="sub" id="p2Sub">Pick yours from the list.</p>
+        <input class="search" id="q" type="search" placeholder="Search, e.g. 13 Pro" autocomplete="off" aria-label="Search models">
+        <div class="tiles models" id="modelTiles"></div>
+        <p class="empty" id="noModel" hidden>No match. Go back and choose "Something else", or message us.</p>
+      </div>
+
+      <div class="panel" id="p3" hidden>
+        <h2 id="p3Title">What's the problem?</h2>
+        <p class="sub" id="p3Sub">Pick one or more.</p>
+        <div class="tiles jobs" id="jobTiles"></div>
+        <p class="note" style="margin-top:14px">Not listed? Pick the closest one and add details on the next screen.</p>
+        <div class="pickbar"><span id="pickSum">Pick one or more repairs</span><button class="btn btn-primary" type="button" id="toQuote" disabled>See quote</button></div>
+      </div>
+
+      <div class="panel" id="p4" hidden>
+        <h2 id="p4Title">Your quote</h2>
+        <div class="quote">
+          <div class="col">
+            <div class="price"><span>Estimate</span><strong id="tPrice">£–</strong></div>
+            <dl class="rows">
+              <dt>Device</dt><dd id="tDevice">–</dd>
+              <dt>Repair</dt><dd id="tFault">–</dd>
+              <dt id="svT" hidden>Multi-repair saving</dt><dd id="svV" hidden>–</dd>
+            </dl>
+            <div class="what" id="whatWrap"><em>What we do</em><ul id="tWhat"></ul></div>
+            <label class="collect" for="collect"><input type="checkbox" id="collect"><span><b>Collect and drop back</b><small>We pick it up and bring it back for £5</small></span></label>
+            <p class="note" id="tNote">Price is confirmed once we've seen the device.</p>
+          </div>
+          <form class="col" id="form" novalidate>
+            <label class="field" for="name">Your name<input id="name" autocomplete="name" placeholder="e.g. Jordan"></label>
+            <label class="field" for="details">Anything else we should know?<textarea id="details" placeholder="e.g. Dropped it last night, touch doesn't work at the bottom"></textarea></label>
+            <label class="field" for="when">When suits you?<input id="when" placeholder="e.g. Saturday morning"></label>
+            <div class="send">
+              <a class="btn btn-wa" id="sendWa" href="#" target="_blank" rel="noopener">Book on WhatsApp</a>
+              <a class="btn btn-ig" id="sendIg" href="#" target="_blank" rel="noopener">Message on Instagram</a>
+            </div>
+            <p class="toast" id="toast" role="status"></p>
+            <details class="preview"><summary>See the message we'll send</summary><pre id="msg"></pre></details>
+            <p class="contact">WhatsApp <b id="waText"></b> · Instagram <b id="igText"></b></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap owner-sec" id="ownerSec" hidden>
+    <form class="owner" id="lock" hidden>
+      <h3>Owner view</h3>
+      <label for="pw">Password</label>
+      <input type="password" id="pw" autocomplete="current-password">
+      <button class="btn btn-ghost" type="submit">Unlock</button>
+      <p class="src" id="pwErr" role="alert"></p>
+    </form>
+    <div class="owner" id="owner" hidden>
+      <h3>Owner view</h3>
+      <dl class="rows">
+        <dt>Part cost</dt><dd id="oPart">–</dd>
+        <dt>Labour</dt><dd id="oLab">–</dd>
+        <dt>Multi-repair discount</dt><dd id="oDisc">–</dd>
+        <dt>Before rounding</dt><dd id="oRaw">–</dd>
+        <dt>He earns per hour</dt><dd id="oEff">–</dd>
+      </dl>
+      <label for="rate">Hourly rate <b id="rateVal">£40</b></label>
+      <input type="range" id="rate" min="30" max="50" step="1" value="38">
+      <label for="disc">Multi-repair discount (on labour) <b id="discVal">15%</b></label>
+      <input type="range" id="disc" min="0" max="20" step="5" value="15">
+      <label for="markup">Markup on parts <b id="markupVal">0%</b></label>
+      <input type="range" id="markup" min="0" max="50" step="5" value="0">
+      <label for="cfee">Controller repair fee <b id="cfeeVal">£20</b></label>
+      <input type="range" id="cfee" min="15" max="25" step="1" value="20">
+      <p class="src" id="oSrc">Pick a repair to see the breakdown.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>How it works</h2>
+      <ol class="how">
+        <li><b>Get a price</b><p>Answer the three questions above. Book 2 or more repairs and you get money off.</p></li>
+        <li><b>Message us</b><p>Send your quote on WhatsApp or Instagram and we'll confirm a time.</p></li>
+        <li><b>Drop off or we collect (£5)</b><p>We check the device and confirm the final price before starting.</p></li>
+        <li><b>Get it back</b><p>Most repairs are done the same day, and the rest within 24 hours.</p></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">Fixing Phones · Prices are estimates and are confirmed before any work starts. Not affiliated with Apple, Samsung, Google, Sony or Microsoft.</div>
+</footer>
+
+<script>
+/* ===== SETTINGS: edit these ===== */
+const CONFIG = {
+  business: "Fixing Phones",
+  whatsapp: "447000000000",       // PLACEHOLDER: international format, no + or spaces
+  whatsappDisplay: "07000 000000", // PLACEHOLDER
+  instagram: "fixiingphone",      // handle, no @
+  rate: 38,                       // £ per hour on repairs (target £30–£40 after rounding and discounts)
+  cleanRate: 25,                  // £ per hour on cleaning jobs
+  multiDiscount: 15,              // % off labour when 2+ repairs are booked together
+  markup: 0,                      // % added to part cost
+  controllerFee: 20,              // £ flat labour on controller repairs (keeps them well under a new pad)
+  controllerExtra: 10,            // £ added per extra repair on the same controller
+  collectionFee: 5,               // £ for collection & drop-off
+  roundTo: 5                      // round customer price to the nearest £5
+};
+const PRICES_CHECKED = "23 Oct 2026";
+
+/* ===== PRICE TABLE =====
+   cost = part price inc VAT (£), hrs = bench time.
+   src "ip4u" = taken from iparts-4u.co.uk on PRICES_CHECKED.
+   src "est"  = estimate, replace with his iParts4U price. */
+const IPHONE_JOBS = [
+  ["screen","Screen (standard)","Cracked or not responding",0.75],
+  ["screenp","Screen (premium OLED)","Closest to original",0.75],
+  ["battery","Battery","Drains fast or shuts off",0.5],
+  ["port","Charging port","Won't charge or loose cable",1],
+  ["camera","Rear camera","Blurry, black or shaking",0.75],
+  // repairs below have an iFixit guide; [id, name, hint, hours, fixed part cost (est)]
+  ["speaker","Loudspeaker","Quiet, crackly or no sound",0.75,8],
+  ["taptic","Taptic Engine","No vibration or buzzing",0.75,10],
+  ["sim","SIM card reader","No SIM / no service",1,8],
+  ["dclean","Deep clean","Muffled speaker or lint in the port",0.5,2]
+];
+// [model, standard screen, premium screen, battery, port, camera]  all "est"
+const IPHONES = [
+  ["iPhone 11",18,30,12,10,20],["iPhone 11 Pro",22,45,13,12,30],["iPhone 11 Pro Max",25,55,14,12,30],
+  ["iPhone 12 mini",24,50,14,12,25],["iPhone 12",24,55,14,12,28],["iPhone 12 Pro",24,55,14,12,38],["iPhone 12 Pro Max",28,70,15,14,40],
+  ["iPhone 13 mini",26,55,15,12,28],["iPhone 13",26,60,15,12,30],["iPhone 13 Pro",32,85,16,14,45],["iPhone 13 Pro Max",35,95,17,14,50],
+  ["iPhone 14",28,65,16,14,32],["iPhone 14 Plus",32,75,17,14,32],["iPhone 14 Pro",38,110,18,16,55],["iPhone 14 Pro Max",42,120,19,16,60],
+  ["iPhone 15",32,85,18,15,40],["iPhone 15 Plus",36,95,19,15,40],["iPhone 15 Pro",45,150,20,18,65],["iPhone 15 Pro Max",50,170,21,18,70],
+  ["iPhone 16",40,110,20,16,45],["iPhone 16 Plus",45,125,21,16,45],["iPhone 16 Pro",60,190,22,18,75],["iPhone 16 Pro Max",65,210,24,18,80],
+  ["iPhone 17",50,140,22,18,55],["iPhone Air",60,170,24,18,50],["iPhone 17 Pro",75,230,24,20,90],["iPhone 17 Pro Max",85,260,26,20,95]
+];
+
+/* Samsung and Pixel: same layout as iPhone. All part prices "est". */
+const ANDROID_JOBS = [
+  ["screen","Screen","Cracked, lines or not responding",1],
+  ["battery","Battery","Drains fast or swollen",1],
+  ["port","Charging port","Won't charge or loose cable",1],
+  ["camera","Rear camera","Blurry, black or cracked lens",0.75],
+  ["back","Back glass","Cracked back panel",0.5],
+  ["dclean","Deep clean","Muffled speaker or lint in the port",0.5,2]
+];
+// [model, screen, battery, port, camera, back glass]
+const SAMSUNGS = [
+  ["Galaxy S21",110,15,12,35,12],["Galaxy S21 Ultra",190,18,14,55,15],
+  ["Galaxy S22",110,15,12,35,12],["Galaxy S22 Ultra",200,18,14,55,15],
+  ["Galaxy S23",120,16,12,40,12],["Galaxy S23 Ultra",210,20,14,60,15],
+  ["Galaxy S24",130,18,14,45,14],["Galaxy S24 Ultra",230,22,15,65,18],
+  ["Galaxy S25",150,20,14,50,15],["Galaxy S25 Ultra",260,24,16,75,20],
+  ["Galaxy A14",30,12,8,15,8],["Galaxy A15",45,12,8,18,8],["Galaxy A25",55,14,8,20,10],
+  ["Galaxy A34",60,14,10,22,10],["Galaxy A35",65,15,10,25,10],["Galaxy A54",70,15,10,25,12],["Galaxy A55",75,16,10,28,12]
+];
+const PIXELS = [
+  ["Pixel 6",55,15,12,35,15],["Pixel 6 Pro",110,18,14,50,20],["Pixel 6a",45,14,12,25,12],
+  ["Pixel 7",60,16,12,35,15],["Pixel 7 Pro",120,18,14,55,20],["Pixel 7a",50,15,12,28,12],
+  ["Pixel 8",75,18,14,40,18],["Pixel 8 Pro",140,20,15,60,22],["Pixel 8a",60,16,12,30,14],
+  ["Pixel 9",95,20,15,45,20],["Pixel 9 Pro",150,22,15,65,25],["Pixel 9 Pro XL",170,24,16,70,25],["Pixel 9a",70,18,14,35,15]
+];
+const PHONES = {
+  iphone:{jobs:IPHONE_JOBS, models:IPHONES},
+  samsung:{jobs:ANDROID_JOBS, models:SAMSUNGS},
+  pixel:{jobs:ANDROID_JOBS, models:PIXELS}
+};
+const CONSOLES = {
+  playstation: {
+    "PS5 (original)": [
+      ["hdmi","HDMI port","No picture on the TV",5.95,1.5,"ip4u"],
+      ["drive","Disc drive board","Won't read or eject discs",17.95,1,"ip4u"],
+      ["laser","Disc drive laser","Discs spin but won't read",25,1,"est"],
+      ["psu","Power supply","Console won't turn on",45,1,"est"],
+      ["powerb","Power & eject button board","Buttons don't respond",8,0.75,"est"],
+      ["usb","Front USB-C port","Loose or dead port",5.95,1.25,"ip4u"],
+      ["usbb","Front USB board","Front ports all dead",8,0.75,"est"],
+      ["led","LED light board","Light bar not working",8,0.75,"est"],
+      ["lan","Ethernet port","Wired internet not working",11.95,1.5,"ip4u"],
+      ["fan","Cooling fan","Loud, rattling or overheating",14.95,1,"est"],
+      ["plates","Side plates","Cracked or scratched covers",15,0.25,"est"],
+      ["clean","Deep clean (cooling)","Dusty, hot or noisy",5,1,"est"]
+    ],
+    "PS5 Slim": [
+      ["hdmi","HDMI port","No picture on the TV",5.95,1.5,"ip4u"],
+      ["usb","Front USB-C port","Loose or dead port",5.95,1.25,"ip4u"],
+      ["lan","Ethernet port","Wired internet not working",11.95,1.5,"ip4u"],
+      ["clean","Deep clean (cooling)","Dusty, hot or noisy",5,1,"est"]
+    ]
+  },
+  controllers: {
+    "PS5 controller (DualSense)": [
+      ["stick1","Stick drift (one stick)","Hall-effect stick, won't drift again",5.95,0.75,"ip4u"],
+      ["stick2","Stick drift (both sticks)","Hall-effect upgrade on both",11.90,1,"ip4u"],
+      ["cbatt","Battery","Won't hold charge",10,0.5,"est"],
+      ["trig","Trigger (L2 / R2)","Sticking or not registering",8,0.75,"est"],
+      ["bump","L1 / R1 button","Bumper not clicking",4,0.5,"est"],
+      ["btns","Face buttons","Sticky or unresponsive",5,0.5,"est"],
+      ["touch","Touchpad","Touchpad not working",10,0.75,"est"],
+      ["rumble","Vibration motor","No rumble",6,0.75,"est"],
+      ["cspk","Speaker or mic","No sound or mic dead",5,0.5,"est"],
+      ["shell","Shell (front & back)","Cracked or worn casing",12,0.5,"est"],
+      ["cclean","Deep clean","Sticky buttons or grime",1,0.5,"est"]
+    ],
+    "Xbox Series X|S controller": [
+      ["stick1","Stick drift (one stick)","Hall-effect stick, won't drift again",6,0.75,"est"],
+      ["stick2","Stick drift (both sticks)","Hall-effect upgrade on both",12,1,"est"],
+      ["bump","LB / RB bumper","Bumper not clicking",4,0.5,"est"],
+      ["trig","Trigger (LT / RT)","Sticking or not registering",5,0.75,"est"],
+      ["btns","Face buttons","Sticky or unresponsive",4,0.5,"est"],
+      ["usbc","USB-C port","Won't charge or connect by cable",3,0.75,"est"],
+      ["rumble","Vibration motor","No rumble",5,0.75,"est"],
+      ["shell","Shell","Cracked or worn casing",12,0.5,"est"],
+      ["cclean","Deep clean","Sticky buttons or grime",1,0.5,"est"]
+    ]
+  },
+  xbox: {
+    "Xbox Series X": [
+      ["hdmi","HDMI port","No picture on the TV",6.99,1.5,"ip4u"],
+      ["psu","Power supply","Console won't turn on",60.99,1,"ip4u"],
+      ["fan","Cooling fan","Loud or overheating",20,1,"est"],
+      ["drive","Disc drive","Won't read or eject discs",35,1,"est"],
+      ["ssd","Storage (SSD)","Stuck on logo or won't boot",45,1,"est"],
+      ["powerb","Power button board","Power button not working",12,0.75,"est"],
+      ["usbb","USB & pair button board","Front USB or pairing dead",12,0.75,"est"],
+      ["wifi","Wi-Fi antenna board","Weak or no Wi-Fi",15,0.75,"est"],
+      ["acc","Accessory antenna board","Controller won't connect",10,0.75,"est"],
+      ["shell","Outer shell","Cracked or damaged casing",25,0.75,"est"],
+      ["clean","Clean & repaste","Dusty, hot or noisy",5,1,"est"]
+    ],
+    "Xbox Series S": [
+      ["hdmi","HDMI port","No picture on the TV",5.95,1.5,"ip4u"],
+      ["psu","Power supply","Console won't turn on",40,1,"est"],
+      ["fan","Cooling fan","Loud or overheating",18,1,"est"],
+      ["ssd","Storage (SSD)","Stuck on logo or won't boot",40,1,"est"],
+      ["power","Power button board","Power button not working",24.95,0.75,"ip4u"],
+      ["wifi","Wi-Fi / Bluetooth board","No Wi-Fi or controller won't pair",24.95,0.75,"ip4u"],
+      ["shell","Outer case","Cracked or damaged casing",20,0.75,"est"],
+      ["clean","Clean & repaste","Dusty, hot or noisy",5,1,"est"]
+    ]
+  },
+  pc: {
+    "Desktop / gaming PC": [
+      ["dust","Dust-out clean","Dusty, loud fans",3,0.75,"est"],
+      ["repaste","Clean & repaste (CPU + GPU)","Running hot or throttling",8,1.5,"est"]
+    ],
+    "Laptop": [
+      ["dust","Dust-out clean","Loud fan or vents blocked",3,0.75,"est"],
+      ["repaste","Clean & repaste","Running hot or shutting down",8,1.5,"est"]
+    ]
+  }
+};
+// iFixit guide pages he follows (shown in owner view)
+const GUIDES = {
+  iphone:"https://www.ifixit.com/Device/iPhone",
+  samsung:"https://www.ifixit.com/Device/Phone",
+  pixel:"https://www.ifixit.com/Device/Phone",
+  "PS5 (original)":"https://www.ifixit.com/Device/PlayStation_5",
+  "PS5 controller (DualSense)":"https://www.ifixit.com/Device/DualSense",
+  "Xbox Series X|S controller":"https://www.ifixit.com/Device/Xbox_Controller",
+  "Xbox Series X":"https://www.ifixit.com/Device/Xbox_Series_X",
+  "Xbox Series S":"https://www.ifixit.com/Device/Xbox_Series_S"
+};
+const CATS = [["iphone","iPhone"],["samsung","Samsung"],["pixel","Google Pixel"],["playstation","PlayStation"],["xbox","Xbox"],["controllers","Controllers"],["pc","PC & laptop"],["other","Something else"]];
+
+/* ===== WHAT WE DO: shown on the quote for each repair ===== */
+const DETAILS = {
+  screen:["Replace the full display (glass, touch and screen) as one unit","Move over the parts from your old screen and test touch, display and sensors"],
+  screenp:["Fit a premium OLED display, closest to the original colours and brightness","Move over the parts from your old screen and test touch, display and sensors"],
+  battery:["Remove the old battery and fit a new one with fresh adhesive","Test charging and check battery health"],
+  "iphone:battery":["Remove the old battery and fit a new one with fresh adhesive","Test charging and check battery health","iPhones may show a non-genuine battery notice in Settings. The battery works normally"],
+  port:["Replace the charging port, or the small board it sits on","Test charging, cable fit and the bottom microphone"],
+  camera:["Swap in a new rear camera module","Test focus, every lens and video"],
+  back:["Remove the cracked back glass and fit a new back panel","Clean the frame so the new glass sits flat"],
+  speaker:["Replace the bottom loudspeaker","Test speakerphone, music and alerts"],
+  taptic:["Replace the vibration motor (Taptic Engine)","Test vibration and haptic feedback"],
+  sim:["Replace the SIM card reader","Test with your SIM for signal"],
+  dclean:["Clear lint and dirt from the charging port, speaker and mic grilles","No parts replaced, just a careful clean"],
+  hdmi:["Desolder the damaged HDMI port from the motherboard and solder in a new one","Test picture and sound on a TV"],
+  drive:["Replace the disc drive's control board","Test reading and ejecting discs"],
+  "xbox:drive":["Replace the whole disc drive","Test with a game disc"],
+  laser:["Replace the laser unit inside the disc drive","Test with game and Blu-ray discs"],
+  psu:["Replace the internal power supply","Test that the console powers on and runs a game"],
+  powerb:["Replace the board with the power and eject buttons","Test power-on, eject and standby"],
+  power:["Replace the power button board","Test power-on and the pairing button"],
+  usb:["Desolder the front USB-C port and solder in a new one","Test charging and data"],
+  usbb:["Replace the front USB board","Test the ports and the power light"],
+  "xbox:usbb":["Replace the front USB and pairing button board","Test the USB port and controller pairing"],
+  led:["Replace the board that lights the console","Test the light bar"],
+  lan:["Desolder the ethernet port and solder in a new one","Test a wired internet connection"],
+  fan:["Replace the cooling fan","Clean the heatsink and vents while it's open"],
+  plates:["Fit new side plates","No need to open the console"],
+  clean:["Open up the console and clear dust from the fan, heatsink and vents","Replace the thermal paste and pads where needed"],
+  "playstation:clean":["Open up the console and clear dust from the fan, heatsink and dust catchers","Check the cooling and replace thermal pads where needed"],
+  ssd:["Fit a replacement internal SSD","Reinstall the console's system software so it boots"],
+  wifi:["Replace the wireless board","Test Wi-Fi and controller connection"],
+  acc:["Replace the antenna board the controller connects to","Test pairing and range"],
+  shell:["Move everything into a new outer shell","Every internal part is transferred over"],
+  "controllers:shell":["Fit a new outer shell","Move over all buttons, sticks and internals"],
+  stick1:["Desolder the worn joystick and fit a Hall-effect stick","Hall-effect sticks use magnets, so they don't wear out and drift"],
+  stick2:["Desolder both joysticks and fit Hall-effect sticks","Hall-effect sticks use magnets, so they don't wear out and drift"],
+  cbatt:["Replace the controller's internal battery","Test charging and how long it holds"],
+  trig:["Replace the trigger assembly","Test full press and release"],
+  bump:["Replace the bumper button and its switch","Test the click"],
+  btns:["Replace the rubber contact pads under the buttons","Clean the contacts so every press registers"],
+  touch:["Replace the touchpad","Test touch and click"],
+  rumble:["Replace the vibration motor","Test rumble in a game"],
+  cspk:["Replace the built-in speaker or microphone","Test sound and voice chat"],
+  usbc:["Desolder the USB-C port and solder in a new one","Test charging and wired play"],
+  cclean:["Open up and clean under the buttons, sticks and triggers","No parts replaced"],
+  dust:["Clear dust from fans, filters and heatsinks","Check every fan spins freely"],
+  repaste:["Clean off the old thermal paste and apply fresh paste","Clean the fans and heatsinks and check temperatures after"]
+};
+function detailsFor(job){ return DETAILS[state.cat + ":" + job.id] || DETAILS[job.id] || []; }
+
+
+
+
+
+/* ===== wizard ===== */
+const $ = id => document.getElementById(id);
+const state = {step:1, cat:null, model:null, jobs:[], collect:false};
+const gbp = n => "£" + (Math.round(n*100)/100).toFixed(2);
+
+const ICON = {
+  phone:'<svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect x="7.5" y="2.5" width="13" height="23" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 5.5h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  ps:'<svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><path d="M9 3h10l-1.5 22h-7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 8h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  xbox:'<svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect x="7" y="3" width="14" height="22" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="14" cy="9" r="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>',
+  pad:'<svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><path d="M8 9h12a5 5 0 0 1 4.9 6l-1 5a2.5 2.5 0 0 1-4.3 1.2L17 18h-6l-2.6 3.2A2.5 2.5 0 0 1 4.1 20l-1-5A5 5 0 0 1 8 9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12v4M7 14h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="19" cy="13" r="1.3" fill="currentColor"/><circle cx="21" cy="15.5" r="1.3" fill="currentColor"/></svg>',
+  pc:'<svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="4" width="22" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 24h8M14 19v5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+  q:'<svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="11" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10.5 11a3.5 3.5 0 1 1 5 3.2c-1 .5-1.5 1.2-1.5 2.3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="14" cy="20" r="1.3" fill="currentColor"/></svg>'
+};
+const CAT_INFO = {
+  iphone:["iPhone","iPhone 11 to 17","phone","Which iPhone?"],
+  samsung:["Samsung","Galaxy S and A series","phone","Which Galaxy?"],
+  pixel:["Google Pixel","Pixel 6 to 9","phone","Which Pixel?"],
+  playstation:["PlayStation","PS5 and PS5 Slim","ps","Which PlayStation?"],
+  xbox:["Xbox","Series X and Series S","xbox","Which Xbox?"],
+  controllers:["Controllers","PS5 and Xbox controllers","pad","Which controller?"],
+  pc:["PC & laptop","Cleaning and cooling","pc","Desktop or laptop?"],
+  other:["Something else","Tell us what's wrong","q",""]
+};
+
+function jobsFor(cat, model){
+  if (!cat || !model) return [];
+  if (PHONES[cat]){
+    const row = PHONES[cat].models.find(r => r[0] === model); if (!row) return [];
+    return PHONES[cat].jobs.map((j,i) => ({id:j[0], name:j[1], hint:j[2], hrs:j[3], cost: j[4] != null ? j[4] : row[i+1], src:"est"}));
+  }
+  if (!CONSOLES[cat]) return [];
+  return (CONSOLES[cat][model] || []).map(j => ({id:j[0], name:j[1], hint:j[2], cost:j[3], hrs:j[4], src:j[5]}));
+}
+function modelsFor(cat){
+  if (PHONES[cat]) return PHONES[cat].models.map(r => r[0]);
+  if (CONSOLES[cat]) return Object.keys(CONSOLES[cat]);
+  return [];
+}
+function selected(){ const all = jobsFor(state.cat, state.model); return state.jobs.map(id => all.find(j => j.id === id)).filter(Boolean); }
+/* Several repairs on one device: parts and bench time add up, rounded once.
+   Controllers: the flat fee is charged once per controller. */
+const CLEAN_JOBS = ["dclean","clean","cclean","dust","repaste"];
+const labourFor = j => j.hrs * (CLEAN_JOBS.includes(j.id) ? CONFIG.cleanRate : CONFIG.rate);
+const roundPrice = x => Math.max(CONFIG.roundTo, Math.round(x / CONFIG.roundTo) * CONFIG.roundTo);
+function quote(list){
+  if (!Array.isArray(list)) list = [list];
+  const part = list.reduce((a,j) => a + j.cost, 0) * (1 + CONFIG.markup/100);
+  const hrs = list.reduce((a,j) => a + j.hrs, 0);
+  const flat = state.cat === "controllers";
+  const multi = list.length > 1;
+  const fullLab = flat ? CONFIG.controllerFee + (list.length - 1) * CONFIG.controllerExtra : list.reduce((a,j) => a + labourFor(j), 0);
+  const disc = multi && !flat ? fullLab * CONFIG.multiDiscount / 100 : 0;
+  const lab = fullLab - disc;
+  const raw = part + lab;
+  const base = roundPrice(raw);
+  const separate = multi ? list.reduce((a,j) => a + quote([j]).base, 0) : base;
+  return {part, lab, disc, raw, flat, hrs, base, saving: Math.max(0, separate - base), price: base + (state.collect ? CONFIG.collectionFee : 0)};
+}
+const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function go(step){
+  state.step = step;
+  render();
+  const top = $("wizard").getBoundingClientRect().top;
+  if (top < 0) $("wizard").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"});
+}
+function render(){
+  const other = state.cat === "other";
+  const names = ["Device","Model","Repair","Quote"];
+  const sel = selected();
+  const done = [state.cat && CAT_INFO[state.cat][0], state.model, sel.length ? (sel.length === 1 ? sel[0].name : sel.length + " repairs") : null, null];
+  $("crumbs").innerHTML = names.map((n,i) => {
+    const s = i + 1;
+    if (other && (s === 2 || s === 3)) return "";
+    const cls = s === state.step ? "now" : (s < state.step ? "done" : "");
+    const label = s < state.step && done[i] ? done[i] : n;
+    return `<button class="crumb ${cls}" type="button" data-step="${s}"${s > state.step ? " disabled" : ""}${s === state.step ? ' aria-current="step"' : ""}>${esc(label)}</button>`;
+  }).join("");
+  $("prog").style.width = (state.step / 4 * 100) + "%";
+  $("back").hidden = state.step === 1;
+  [1,2,3,4].forEach(n => { const p = $("p" + n); p.hidden = n !== state.step; p.classList.remove("enter"); });
+  const p = $("p" + state.step); void p.offsetWidth; p.classList.add("enter");
+  if (state.step === 1) renderCats();
+  if (state.step === 2) renderModels();
+  if (state.step === 3) renderJobs();
+  if (state.step === 4) renderQuote();
+  renderOwner();
+}
+function renderCats(){
+  $("catTiles").innerHTML = CATS.map(([id]) => {
+    const c = CAT_INFO[id];
+    return `<button class="tile" type="button" data-cat="${id}">${ICON[c[2]]}<b>${c[0]}</b><small>${c[1]}</small></button>`;
+  }).join("");
+}
+function renderModels(){
+  const all = modelsFor(state.cat);
+  $("p2Title").textContent = CAT_INFO[state.cat][3];
+  $("p2Sub").textContent = all.length > 8 ? "Search or pick yours from the list." : "Pick yours.";
+  $("q").hidden = all.length <= 8;
+  const term = $("q").value.trim().toLowerCase();
+  const list = all.filter(m => !term || m.toLowerCase().includes(term));
+  $("modelTiles").innerHTML = list.map(m => `<button class="tile" type="button" data-model="${esc(m)}"><b>${esc(m)}</b></button>`).join("");
+  $("noModel").hidden = list.length > 0;
+}
+function renderJobs(){
+  $("p3Title").textContent = "What's wrong with your " + state.model + "?";
+  $("p3Sub").textContent = state.cat === "controllers"
+    ? "Pick one or more. Extra repairs on the same controller cost less."
+    : "Pick one or more. " + CONFIG.multiDiscount + "% off labour when you book 2 or more.";
+  $("jobTiles").innerHTML = jobsFor(state.cat, state.model).map(j => {
+    const on = state.jobs.includes(j.id);
+    return `<button class="tile" type="button" data-job="${j.id}" aria-pressed="${on}"><span class="tick" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6.5l2.5 2.5L10 3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>${esc(j.name)}</b><small>${esc(j.hint)}</small><span class="t-price">£${quote(j).base}</span></button>`;
+  }).join("");
+  updatePick();
+}
+function updatePick(){
+  const sel = selected();
+  $("toQuote").disabled = !sel.length;
+  const q = sel.length ? quote(sel) : null;
+  $("pickSum").innerHTML = q ? `<b>${sel.length} repair${sel.length > 1 ? "s" : ""}</b> · £${q.base}${q.saving ? " · you save £" + q.saving : ""}` : "Pick one or more repairs";
+}
+function renderQuote(){
+  const sel = selected();
+  $("tDevice").textContent = state.cat === "other" ? "Other device" : state.model;
+  if (!sel.length){
+    $("p4Title").textContent = "Tell us what's wrong";
+    $("tFault").textContent = "Needs a check";
+    $("tPrice").textContent = "Ask us";
+    $("whatWrap").hidden = true;
+    $("svT").hidden = $("svV").hidden = true;
+    $("tNote").textContent = "Describe the problem below and we'll reply with a price.";
+  } else {
+    const q = quote(sel);
+    $("p4Title").textContent = "Your quote";
+    $("tFault").textContent = sel.map(j => j.name).join(", ");
+    $("tPrice").textContent = "£" + q.price;
+    $("svT").hidden = $("svV").hidden = !q.saving;
+    $("svV").textContent = "£" + q.saving + " off";
+    const li = j => detailsFor(j).map(x => "<li>" + esc(x) + "</li>").join("");
+    $("whatWrap").hidden = !sel.some(j => detailsFor(j).length);
+    $("tWhat").innerHTML = sel.length === 1 ? li(sel[0]) : sel.map(j => "<li><b>" + esc(j.name) + "</b><ul>" + li(j) + "</ul></li>").join("");
+    $("tNote").textContent = "Price is confirmed once we've seen the device.";
+  }
+  renderMessage();
+}
+function renderOwner(){
+  const sel = state.step >= 3 ? selected() : [];
+  if (!sel.length){ ["oPart","oLab","oRaw","oDisc","oEff"].forEach(id => $(id).textContent = "–"); $("oSrc").textContent = "Pick a repair to see the breakdown."; return; }
+  const q = quote(sel);
+  $("oPart").textContent = gbp(q.part);
+  $("oLab").textContent = gbp(q.lab) + (q.flat ? " (flat fee)" : " (" + Math.round(q.hrs*100)/100 + " h)");
+  $("oRaw").textContent = gbp(q.raw);
+  $("oDisc").textContent = q.disc ? "−" + gbp(q.disc) : "none";
+  $("oEff").textContent = gbp((q.base - q.part) / q.hrs);
+  const g = GUIDES[PHONES[state.cat] ? state.cat : state.model];
+  $("oSrc").innerHTML = (sel.every(j => j.src === "ip4u") ? "Part prices from iParts4U, checked " + PRICES_CHECKED + "." : "Some part prices are estimates. Replace them with his supplier prices in the price table.")
+    + (g ? ' <a href="' + g + '" target="_blank" rel="noopener">Open iFixit guides</a>' : "");
+}
+
+function message(){
+  const sel = selected();
+  const name = $("name").value.trim(), details = $("details").value.trim(), when = $("when").value.trim();
+  const lines = ["Hi " + CONFIG.business + ", I'd like to book a repair."];
+  if (name) lines.push("Name: " + name);
+  lines.push("Device: " + (state.cat === "other" || !state.model ? "Other" : state.model));
+  if (sel.length) lines.push((sel.length > 1 ? "Repairs: " : "Repair: ") + sel.map(j => j.name).join(", "), "Quote from your site: £" + quote(sel).price + (state.collect ? " (incl. £" + CONFIG.collectionFee + " collection)" : ""));
+  else if (state.collect) lines.push("I'd like collection & drop-off (£" + CONFIG.collectionFee + ")");
+  if (details) lines.push("Details: " + details);
+  if (when) lines.push("Drop-off: " + when);
+  return lines.join("\n");
+}
+const waLink = t => "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(t);
+function renderMessage(){ const t = message(); $("msg").textContent = t; $("sendWa").href = waLink(t); }
+
+/* events */
+$("catTiles").addEventListener("click", e => {
+  const b = e.target.closest("[data-cat]"); if (!b) return;
+  state.cat = b.dataset.cat; state.model = null; state.jobs = []; $("q").value = "";
+  go(state.cat === "other" ? 4 : 2);
+});
+$("modelTiles").addEventListener("click", e => {
+  const b = e.target.closest("[data-model]"); if (!b) return;
+  state.model = b.dataset.model; state.jobs = []; go(3);
+});
+$("jobTiles").addEventListener("click", e => {
+  const b = e.target.closest("[data-job]"); if (!b) return;
+  const id = b.dataset.job, i = state.jobs.indexOf(id);
+  if (i >= 0) state.jobs.splice(i, 1); else state.jobs.push(id);
+  renderJobs(); renderOwner();
+});
+$("toQuote").addEventListener("click", () => { if (state.jobs.length) go(4); });
+$("q").addEventListener("input", renderModels);
+$("crumbs").addEventListener("click", e => { const b = e.target.closest("[data-step]"); if (b && !b.disabled) go(+b.dataset.step); });
+$("back").addEventListener("click", () => go(state.step === 4 && state.cat === "other" ? 1 : state.step - 1));
+$("collect").addEventListener("change", e => { state.collect = e.target.checked; renderQuote(); renderOwner(); });
+["name","details","when"].forEach(id => $(id).addEventListener("input", renderMessage));
+$("form").addEventListener("submit", e => e.preventDefault());
+$("sendIg").addEventListener("click", () => {
+  const t = message();
+  const done = () => { $("toast").textContent = "Your message is copied. Paste it into the Instagram chat with @" + CONFIG.instagram + "."; };
+  const fallback = () => { $("toast").textContent = "Open \"See the message we'll send\", copy it, then paste it into the Instagram chat with @" + CONFIG.instagram + "."; };
+  try { navigator.clipboard.writeText(t).then(done, fallback); } catch(_) { fallback(); }
+});
+$("rate").addEventListener("input", e => { CONFIG.rate = +e.target.value; $("rateVal").textContent = "£" + CONFIG.rate; render(); });
+$("markup").addEventListener("input", e => { CONFIG.markup = +e.target.value; $("markupVal").textContent = CONFIG.markup + "%"; render(); });
+$("disc").addEventListener("input", e => { CONFIG.multiDiscount = +e.target.value; $("discVal").textContent = CONFIG.multiDiscount + "%"; render(); });
+$("cfee").addEventListener("input", e => { CONFIG.controllerFee = +e.target.value; $("cfeeVal").textContent = "£" + CONFIG.controllerFee; render(); });
+
+/* owner view: password-locked, only the SHA-256 hash is stored */
+const OWNER_HASH = "ba5082f35ff1d1b14a821de670815786f3c1b37e3b32ed15ed4c6800afd8a96a";
+let unlocked = false;
+try { unlocked = sessionStorage.getItem("fp-owner") === OWNER_HASH; } catch(_) {}
+async function sha256(t){ const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,"0")).join(""); }
+function openOwner(){
+  $("ownerSec").hidden = false;
+  $("lock").hidden = unlocked; $("owner").hidden = !unlocked;
+  $("ownerSec").scrollIntoView({behavior:"smooth", block:"center"});
+  if (!unlocked) setTimeout(() => $("pw").focus(), 300);
+}
+function closeOwner(){ $("ownerSec").hidden = true; }
+function checkOwner(){ if (location.hash === "#owner") openOwner(); else closeOwner(); }
+addEventListener("hashchange", checkOwner);
+$("lock").addEventListener("submit", async e => {
+  e.preventDefault();
+  let h = ""; try { h = await sha256($("pw").value); } catch(_) {}
+  if (h === OWNER_HASH){
+    unlocked = true; try { sessionStorage.setItem("fp-owner", OWNER_HASH); } catch(_) {}
+    $("pw").value = ""; $("pwErr").textContent = ""; $("lock").hidden = true; $("owner").hidden = false;
+  } else $("pwErr").textContent = "That password isn't right. Try again.";
+});
+const ob = document.getElementById("ownerBtn");
+if (ob) ob.addEventListener("click", () => {
+  if ($("ownerSec").hidden){ openOwner(); ob.textContent = "Hide owner view"; } else { closeOwner(); ob.textContent = "Owner view"; }
+});
+
+$("topWa").href = "https://wa.me/" + CONFIG.whatsapp;
+$("topIg").href = "https://www.instagram.com/" + CONFIG.instagram;
+$("sendIg").href = "https://ig.me/m/" + CONFIG.instagram;
+$("waText").textContent = CONFIG.whatsappDisplay;
+$("igText").textContent = "@" + CONFIG.instagram;
+$("rate").value = CONFIG.rate; $("rateVal").textContent = "£" + CONFIG.rate;
+$("disc").value = CONFIG.multiDiscount; $("discVal").textContent = CONFIG.multiDiscount + "%";
+render();
+checkOwner();
+</script>
+
+</body>
+</html>
